@@ -1,4 +1,5 @@
 import math
+import time
 
 def encrypt(m, key):
     return m**key[0] % key[1]
@@ -6,6 +7,7 @@ def encrypt(m, key):
 def findNums(pubKey):
     n = pubKey[1]
     for i in range(0,n):
+        #print i, n
         for j in range(0, n):
             if i * j == n and isPrime(i) and isPrime(j):
                 return [i, j]
@@ -35,16 +37,25 @@ def multInverse(e, n):
         x1 += nOrig
     return  x1
 
-p = 11
-q = 13
+p = 997
+q = 773
 n = p*q
-e = 7
+e = 131
 pubKey = [e, n]
 m = 9
+
 print "message:" , m
 c = encrypt(m, pubKey)
 print "cypher:" , c
 nums = findNums(pubKey)
+print nums
 privKey = genPrivKey(nums, pubKey)
+print privKey
 mNew = encrypt(c, privKey)
 print "decrypted message:" , mNew
+
+
+######### CHECK FOR PRIME NUMBERS IN RANGE #####
+#for i in range(0, 1024):
+#    if isPrime(i):
+#        print i, isPrime(i)
