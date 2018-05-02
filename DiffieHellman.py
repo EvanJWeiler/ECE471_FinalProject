@@ -3,6 +3,8 @@ import math
 import time
 import os
 import random
+import primefac
+import gmpy2
 
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -16,6 +18,16 @@ def isPrime(n):
             return False
     return True
 
+def generatePrimeBetter(low, high):
+    primeList = []
+
+    while(primefac.nextprime(low) < high):
+        primeList.append(primefac.nextprime(low))
+        low = primefac.nextprime(low)
+        print(low)
+
+    return random.choice(primeList)
+
 
 def generatePrime(low, high):
     primes = [i for i in range(low, high) if isPrime(i)]
@@ -25,13 +37,24 @@ def generatePrime(low, high):
 
 def main():
     cls()
-    
+
     startTime = time.time()
 
     print("Generating public values g and n...")
 
-    g = 2 # generatePrime(2, 20)
-    n = 2147483647 # generatePrime(1001, 2147470)
+    # g = random.choice(primefac.primes(20))
+    # n = random.choice(primefac.primes(21474836))
+
+    # g = generatePrime(2, 20)
+    # n = generatePrime(2, 21474836)
+
+    g = generatePrimeBetter(2, 20)
+    n = generatePrimeBetter(1000000, 2147483)
+
+    primeFacTime = time.time() - startTime
+
+    g = 19
+    n = 2147483647
 
     print("\nWe will now demonstrate how the Diffie-Hellman key exchange works")
     #time.sleep(2)
@@ -41,7 +64,7 @@ def main():
     #time.sleep(2)
 
     # GETTING PUBLIC KEYS
-    
+
     timeBeforeInput = time.time() - startTime
     wait = True
 
@@ -86,8 +109,11 @@ def main():
     print("i.e. Alice and Bob will raise g to the power of their key, all mod n")
     #time.sleep(3)
 
-    aliceFirstMod = (g ** alicePrivate) % n
-    bobFirstMod = (g ** bobPrivate) % n
+    aliceFirstMod = gmpy2.powmod(g, alicePrivate, n)
+    bobFirstMod = gmpy2.powmod(g, bobPrivate, n)
+
+    # aliceFirstMod = (g ** alicePrivate) % n
+    # bobFirstMod = (g ** bobPrivate) % n
 
     print("\nThe value that Alice obtains is {}").format(int(aliceFirstMod))
     #time.sleep(2)
@@ -101,8 +127,11 @@ def main():
 
     #import pdb; pdb.set_trace()
 
-    aliceSecondMod = (bobFirstMod ** alicePrivate) % n
-    bobSecondMod = (aliceFirstMod ** bobPrivate) % n
+    aliceSecondMod = gmpy2.powmod(bobFirstMod, alicePrivate, n)
+    bobSecondMod = gmpy2.powmod(aliceFirstMod, bobPrivate, n)
+
+    # aliceSecondMod = (bobFirstMod ** alicePrivate) % n
+    # bobSecondMod = (aliceFirstMod ** bobPrivate) % n
 
     print("\nThe value that Alice has now obtained is {}").format(aliceSecondMod)
     #time.sleep(2)
@@ -119,6 +148,7 @@ def main():
     totalTime = (time.time() - timeAfterInput) + timeBeforeInput
 
     print("\nRuntime: {} seconds").format(totalTime) # - 33 after uncommenting out time.sleep commands
+    print("PrimeFac time: {} seconds").format(primeFacTime)
 
-
-main()
+if __name__ == "__main__":
+    main()
