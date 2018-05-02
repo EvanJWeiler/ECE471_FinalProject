@@ -25,10 +25,13 @@ def generatePrime(low, high):
 
 def main():
     cls()
+
+    print("Generating public values g and n...")
+
     g = generatePrime(2, 20)
     n = generatePrime(1001, 2147470)
 
-    print("We will now demonstrate how the Diffie-Hellman key exchange works")
+    print("\nWe will now demonstrate how the Diffie-Hellman key exchange works")
     time.sleep(2)
     print("We will simulate two users, Alice and Bob who the user will control")
     time.sleep(2)
@@ -72,22 +75,24 @@ def main():
             bobPrivate = raw_input("That is not a valid value (integer), please try again: ")
 
     print("\nAlice's private key is {} and Bob's private key is {}.").format(alicePrivate, bobPrivate)
-    time.sleep(1.5)
-    print("Alice and Bob will now both perform g^key(mod n)")
-    time.sleep(1)
-    print("i.e. Alice and Bob will raise g to the power of their key, all mod n")
     time.sleep(2)
+    print("Alice and Bob will now both perform g^key(mod n)")
+    time.sleep(2)
+    print("i.e. Alice and Bob will raise g to the power of their key, all mod n")
+    time.sleep(3)
 
     aliceFirstMod = (g ** alicePrivate) % n
     bobFirstMod = (g ** bobPrivate) % n
 
     print("\nThe value that Alice obtains is {}").format(int(aliceFirstMod))
+    time.sleep(2)
     print("The value that Bob obtains is {}").format(int(bobFirstMod))
-    time.sleep(1.5)
+    time.sleep(2)
 
     print("\nAlice will now send her value to Bob, and Bob will send his number to Alice")
+    time.sleep(2)
     print("Alice and Bob will then raise the values they receive to their private key, all mod n")
-    time.sleep(1.5)
+    time.sleep(3)
 
     #import pdb; pdb.set_trace()
 
@@ -95,11 +100,14 @@ def main():
     bobSecondMod = (aliceFirstMod ** bobPrivate) % n
 
     print("\nThe value that Alice has now obtained is {}").format(aliceSecondMod)
-    print("The value that Bob has now obtained is {}").format(bobSecondMod)
     time.sleep(2)
+    print("The value that Bob has now obtained is {}").format(bobSecondMod)
+    time.sleep(3)
 
     print("\nAs you can see, the numbers that both Alice and Bob received are the same.")
+    time.sleep(2)
     print("Their private keys were never transmitted over any medium, and they both have the same key.")
+    time.sleep(2)
     print("This is the power of Diffie-Hellman")
 
 
