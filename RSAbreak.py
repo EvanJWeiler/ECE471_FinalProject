@@ -1,16 +1,43 @@
 import math
 import time
+import random
+import multiprocessing as mp
+import primefac
+processors = mp.cpu_count()
+
+def genPQ(bits):
+    p = generatePrime(2**(bits-2), 2**(bits))
+    q = generatePrime(2**(bits-2), 2**(bits))
+    return [p,q]
+
+def genE(nPhi):
+    primes = primefac.primes(nPhi)
+    n = random.choice(primes)
+    return n
+
+def parallelF(arg):
+    i = arg
+    if isPrime(i):
+        return i
+
+def generatePrime(low, high):
+    primes = [i for i in range(low, high) if isPrime(i)]
+    worker_pool = mp.Pool(processors)
+    primes = [x for x in worker_pool.map(parallelF, range(low, high)) if x is not None]
+    n = random.choice(primes)
+    return n
 
 def encrypt(m, key):
     return m**key[0] % key[1]
 
 def findNums(pubKey):
     n = pubKey[1]
-    for i in range(0,n):
+    #for i in range(3,int(math.floor(n/3)+1)):
         #print i, n
-        for j in range(0, n):
-            if i * j == n and isPrime(i) and isPrime(j):
-                return [i, j]
+    #    for j in range(3, int(math.floor(n/3)+1)):
+    #        if i * j == n and isPrime(i) and isPrime(j):
+    #            return [i, j]
+    return list( primefac.primefac(n) )
     return -1
 
 def genPrivKey(nums, pubKey):
@@ -20,7 +47,7 @@ def genPrivKey(nums, pubKey):
     return [d, pubKey[1]]
 
 def isPrime(num):
-    if n < 2: return False
+    if num < 2: return False
     for i in range(2, int(math.sqrt(num)+1)):
         if num % i == 0:
             return False
@@ -37,25 +64,34 @@ def multInverse(e, n):
         x1 += nOrig
     return  x1
 
-p = 997
-q = 773
-n = p*q
-e = 131
+print 'Welcome to RSA Breaker!'
+time.sleep(.5)
+print 'We support keys as large as XX bits!'
+time.sleep(1)
+bits = int(raw_input("Please enter the number of bits for the two large numbers (between 4-X): ")) # must be between 4 and X
+[p,q] = genPQ(bits)
+print("The two random primes are p = {} and q = {}").format(p, q)
+time.sleep(1)
+n = p * q
+nPhi = (p-1)*(q-1)
+e = genE(nPhi)
 pubKey = [e, n]
+print("The public key is: {}").format(pubKey)
+time.sleep(1)
 m = 9
-
 print "message:" , m
 c = encrypt(m, pubKey)
+time.sleep(1)
 print "cypher:" , c
+time.sleep(1)
+print "RSA Breaker will now break the encrypted text"
+startTime = time.time()
 nums = findNums(pubKey)
-print nums
+print("RSA breaker found p and q to be: {}").format(nums)
 privKey = genPrivKey(nums, pubKey)
-print privKey
+print ("RSA breaker found the priv key to be: {}").format(privKey)
 mNew = encrypt(c, privKey)
 print "decrypted message:" , mNew
-
-
-######### CHECK FOR PRIME NUMBERS IN RANGE #####
-#for i in range(0, 1024):
-#    if isPrime(i):
-#        print i, isPrime(i)
+elapsedTime = time.time() - startTime
+time.sleep(1)
+print "decrypted message in: ", elapsedTime, " seconds"
