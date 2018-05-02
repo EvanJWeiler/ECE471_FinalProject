@@ -25,8 +25,8 @@ def generatePrime(low, high):
 
 def main():
     cls()
-    g = generatePrime(2, 9)# generatePrime(2, 20)
-    n = generatePrime(9, 251)# generatePrime(1001, 214747)
+    g = generatePrime(2, 20)
+    n = generatePrime(1001, 2147470)
 
     print("We will now demonstrate how the Diffie-Hellman key exchange works")
     time.sleep(2)
@@ -78,8 +78,8 @@ def main():
     print("i.e. Alice and Bob will raise g to the power of their key, all mod n")
     time.sleep(2)
 
-    aliceFirstMod = math.pow(g, alicePrivate) % n
-    bobFirstMod = math.pow(g, bobPrivate) % n
+    aliceFirstMod = (g ** alicePrivate) % n
+    bobFirstMod = (g ** bobPrivate) % n
 
     print("\nThe value that Alice obtains is {}").format(int(aliceFirstMod))
     print("The value that Bob obtains is {}").format(int(bobFirstMod))
@@ -91,11 +91,16 @@ def main():
 
     #import pdb; pdb.set_trace()
 
-    aliceSecondMod = math.pow(bobFirstMod, alicePrivate) % n
-    bobSecondMod = math.pow(aliceFirstMod, bobPrivate) % n
+    aliceSecondMod = (bobFirstMod ** alicePrivate) % n
+    bobSecondMod = (aliceFirstMod ** bobPrivate) % n
 
     print("\nThe value that Alice has now obtained is {}").format(aliceSecondMod)
     print("The value that Bob has now obtained is {}").format(bobSecondMod)
+    time.sleep(2)
+
+    print("\nAs you can see, the numbers that both Alice and Bob received are the same.")
+    print("Their private keys were never transmitted over any medium, and they both have the same key.")
+    print("This is the power of Diffie-Hellman")
 
 
 main()
