@@ -3,17 +3,19 @@ import time
 import random
 import multiprocessing as mp
 import primefac
+import gmpy2
+from gmpy2 import mpz
 processors = mp.cpu_count()
 
 def genPQ(bits):
-    p = generatePrime(2**(bits-2), 2**(bits))
-    q = generatePrime(2**(bits-2), 2**(bits))
+    p = generatePrime(2**(bits)-10000, 2**(bits))
+    q = generatePrime(2**(bits)-10000, 2**(bits))
     return [p,q]
 
 def genE(nPhi):
-    primes = primefac.primes(nPhi)
-    n = random.choice(primes)
-    return n
+    #primes = primefac.primes(nPhi)
+    #n = random.choice(primes)
+    return 65537
 
 def parallelF(arg):
     i = arg
@@ -21,14 +23,15 @@ def parallelF(arg):
         return i
 
 def generatePrime(low, high):
-    primes = [i for i in range(low, high) if isPrime(i)]
+    #primes = [i for i in range(low, high) if isPrime(i)]
     worker_pool = mp.Pool(processors)
     primes = [x for x in worker_pool.map(parallelF, range(low, high)) if x is not None]
     n = random.choice(primes)
     return n
 
 def encrypt(m, key):
-    return m**key[0] % key[1]
+    return int(gmpy2.powmod(m, key[0], key[1]))
+    #return m**key[0] % key[1]
 
 def findNums(pubKey):
     n = pubKey[1]
@@ -37,8 +40,10 @@ def findNums(pubKey):
     #    for j in range(3, int(math.floor(n/3)+1)):
     #        if i * j == n and isPrime(i) and isPrime(j):
     #            return [i, j]
-    return list( primefac.primefac(n) )
-    return -1
+    nums = list(primefac.primefac(n))
+    nums[0] = int(nums[0])
+    nums[1] = int(nums[1])
+    return nums
 
 def genPrivKey(nums, pubKey):
     e = pubKey[0]
@@ -47,11 +52,12 @@ def genPrivKey(nums, pubKey):
     return [d, pubKey[1]]
 
 def isPrime(num):
-    if num < 2: return False
-    for i in range(2, int(math.sqrt(num)+1)):
-        if num % i == 0:
-            return False
-    return True
+    return gmpy2.is_prime(num)
+    #if num < 2: return False
+    #for i in range(2, int(math.sqrt(num)+1)):
+    #    if num % i == 0:
+    #        return False
+    #return True
 
 def multInverse(e, n):
     nOrig = n
@@ -78,7 +84,7 @@ e = genE(nPhi)
 pubKey = [e, n]
 print("The public key is: {}").format(pubKey)
 time.sleep(1)
-m = 9
+m = 1976
 print "message:" , m
 c = encrypt(m, pubKey)
 time.sleep(1)
