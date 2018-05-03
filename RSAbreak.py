@@ -1,20 +1,23 @@
 import math
 import time
 import random
+import os
 import multiprocessing as mp
 import primefac
 import gmpy2
 from gmpy2 import mpz
 processors = mp.cpu_count()
 
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def genPQ(bits):
-    p = generatePrime(2**(bits)-10000, 2**(bits))
-    q = generatePrime(2**(bits)-10000, 2**(bits))
+    p = generatePrime(2**(bits) - 10000, 2**(bits))
+    q = generatePrime(2**(bits) - 10000, 2**(bits))
     return [p,q]
 
 def genE(nPhi):
-    #primes = primefac.primes(nPhi)
-    #n = random.choice(primes)
+    #primes = generatePrime(3, nPhi)
     return 65537
 
 def parallelF(arg):
@@ -70,11 +73,13 @@ def multInverse(e, n):
         x1 += nOrig
     return  x1
 
+
+cls()
 print 'Welcome to RSA Breaker!'
 time.sleep(.5)
-print 'We support keys as large as XX bits!'
+print 'We support keys as large as 60 bits!'
 time.sleep(1)
-bits = int(raw_input("Please enter the number of bits for the two large numbers (between 4-X): ")) # must be between 4 and X
+bits = int(raw_input("Please enter the number of bits for the two large numbers (between 15-60): ")) # must be between 15 and 60
 [p,q] = genPQ(bits)
 print("The two random primes are p = {} and q = {}").format(p, q)
 time.sleep(1)
@@ -84,7 +89,7 @@ e = genE(nPhi)
 pubKey = [e, n]
 print("The public key is: {}").format(pubKey)
 time.sleep(1)
-m = 1976
+m = 19
 print "message:" , m
 c = encrypt(m, pubKey)
 time.sleep(1)
