@@ -3,6 +3,8 @@ import math
 import time
 import os
 import random
+import primefac
+import gmpy2
 
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -16,6 +18,15 @@ def isPrime(n):
             return False
     return True
 
+def generatePrimeBetter(low, high):
+    primeList = []
+
+    while(primefac.nextprime(low) < high):
+        primeList.append(primefac.nextprime(low))
+        low = primefac.nextprime(low)
+
+    return random.choice(primeList)
+
 
 def generatePrime(low, high):
     primes = [i for i in range(low, high) if isPrime(i)]
@@ -25,13 +36,15 @@ def generatePrime(low, high):
 
 def main():
     cls()
-    
+
     startTime = time.time()
 
     print("Generating public values g and n...")
 
-    g = 10 # generatePrime(2, 20)
-    n = 2147483646 # generatePrime(1001, 2147470)
+    g = generatePrimeBetter(2, 19)
+    n = generatePrimeBetter(1000000, 2147483)
+
+    primeFacTime = time.time() - startTime
 
     print("\nWe will now demonstrate how the Diffie-Hellman key exchange works")
     time.sleep(2)
@@ -41,7 +54,7 @@ def main():
     time.sleep(2)
 
     # GETTING PUBLIC KEYS
-    
+
     timeBeforeInput = time.time() - startTime
     wait = True
 
@@ -86,8 +99,8 @@ def main():
     print("i.e. Alice and Bob will raise g to the power of their key, all mod n")
     time.sleep(3)
 
-    aliceFirstMod = (g ** alicePrivate) % n
-    bobFirstMod = (g ** bobPrivate) % n
+    aliceFirstMod = gmpy2.powmod(g, alicePrivate, n)
+    bobFirstMod = gmpy2.powmod(g, bobPrivate, n)
 
     print("\nThe value that Alice obtains is {}").format(int(aliceFirstMod))
     time.sleep(2)
@@ -99,10 +112,8 @@ def main():
     print("Alice and Bob will then raise the values they receive to their private key, all mod n")
     time.sleep(3)
 
-    #import pdb; pdb.set_trace()
-
-    aliceSecondMod = (bobFirstMod ** alicePrivate) % n
-    bobSecondMod = (aliceFirstMod ** bobPrivate) % n
+    aliceSecondMod = gmpy2.powmod(bobFirstMod, alicePrivate, n)
+    bobSecondMod = gmpy2.powmod(aliceFirstMod, bobPrivate, n)
 
     print("\nThe value that Alice has now obtained is {}").format(aliceSecondMod)
     time.sleep(2)
@@ -119,6 +130,7 @@ def main():
     totalTime = (time.time() - timeAfterInput) + timeBeforeInput
 
     print("\nRuntime: {} seconds").format(totalTime - 33)
+    print("PrimeFac time: {} seconds").format(primeFacTime)
 
-
-main()
+if __name__ == "__main__":
+    main()
