@@ -42,12 +42,6 @@ def main():
 
     print("Generating public values g and n...")
 
-    # g = random.choice(primefac.primes(20))
-    # n = random.choice(primefac.primes(21474836))
-
-    # g = generatePrime(2, 20)
-    # n = generatePrime(2, 21474836)
-
     g = generatePrimeBetter(2, 20)
     n = generatePrimeBetter(1000000, 2147483)
 
@@ -57,11 +51,11 @@ def main():
     n = 2147483647
 
     print("\nWe will now demonstrate how the Diffie-Hellman key exchange works")
-    #time.sleep(2)
+    time.sleep(2)
     print("We will simulate two users, Alice and Bob who the user will control")
-    #time.sleep(2)
+    time.sleep(2)
     print("The two public values will be g = {} and n = {}\n").format(g, n)
-    #time.sleep(2)
+    time.sleep(2)
 
     # GETTING PUBLIC KEYS
 
@@ -103,51 +97,43 @@ def main():
     timeAfterInput = time.time()
 
     print("\nAlice's private key is {} and Bob's private key is {}.").format(alicePrivate, bobPrivate)
-    #time.sleep(2)
+    time.sleep(2)
     print("Alice and Bob will now both perform g^key(mod n)")
-    #time.sleep(2)
+    time.sleep(2)
     print("i.e. Alice and Bob will raise g to the power of their key, all mod n")
-    #time.sleep(3)
+    time.sleep(3)
 
     aliceFirstMod = gmpy2.powmod(g, alicePrivate, n)
     bobFirstMod = gmpy2.powmod(g, bobPrivate, n)
 
-    # aliceFirstMod = (g ** alicePrivate) % n
-    # bobFirstMod = (g ** bobPrivate) % n
-
     print("\nThe value that Alice obtains is {}").format(int(aliceFirstMod))
-    #time.sleep(2)
+    time.sleep(2)
     print("The value that Bob obtains is {}").format(int(bobFirstMod))
-    #time.sleep(2)
+    time.sleep(2)
 
     print("\nAlice will now send her value to Bob, and Bob will send his number to Alice")
-    #time.sleep(2)
+    time.sleep(2)
     print("Alice and Bob will then raise the values they receive to their private key, all mod n")
-    #time.sleep(3)
-
-    #import pdb; pdb.set_trace()
+    time.sleep(3)
 
     aliceSecondMod = gmpy2.powmod(bobFirstMod, alicePrivate, n)
     bobSecondMod = gmpy2.powmod(aliceFirstMod, bobPrivate, n)
 
-    # aliceSecondMod = (bobFirstMod ** alicePrivate) % n
-    # bobSecondMod = (aliceFirstMod ** bobPrivate) % n
-
     print("\nThe value that Alice has now obtained is {}").format(aliceSecondMod)
-    #time.sleep(2)
+    time.sleep(2)
     print("The value that Bob has now obtained is {}").format(bobSecondMod)
-    #time.sleep(3)
+    time.sleep(3)
 
     print("\nAs you can see, the numbers that both Alice and Bob received are the same.")
-    #time.sleep(2)
+    time.sleep(2)
     print("Their private keys were never transmitted over any medium, and they both have the same key.")
-    #time.sleep(2)
+    time.sleep(2)
     print("This is the power of Diffie-Hellman")
-    #time.sleep(2)
+    time.sleep(2)
 
     totalTime = (time.time() - timeAfterInput) + timeBeforeInput
 
-    print("\nRuntime: {} seconds").format(totalTime) # - 33 after uncommenting out time.sleep commands
+    print("\nRuntime: {} seconds").format(totalTime - 33)
     print("PrimeFac time: {} seconds").format(primeFacTime)
 
 if __name__ == "__main__":
