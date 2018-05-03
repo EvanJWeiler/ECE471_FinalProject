@@ -24,7 +24,6 @@ def generatePrimeBetter(low, high):
     while(primefac.nextprime(low) < high):
         primeList.append(primefac.nextprime(low))
         low = primefac.nextprime(low)
-        print(low)
 
     return random.choice(primeList)
 
@@ -42,13 +41,10 @@ def main():
 
     print("Generating public values g and n...")
 
-    g = generatePrimeBetter(2, 20)
+    g = generatePrimeBetter(2, 19)
     n = generatePrimeBetter(1000000, 2147483)
 
     primeFacTime = time.time() - startTime
-
-    g = 19
-    n = 2147483647
 
     print("\nWe will now demonstrate how the Diffie-Hellman key exchange works")
     time.sleep(2)
