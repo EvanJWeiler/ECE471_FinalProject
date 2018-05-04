@@ -25,11 +25,13 @@ def generatePrime(low, high):
 
 def main():
     cls()
+    
+    startTime = time.time()
 
     print("Generating public values g and n...")
 
-    g = generatePrime(2, 20)
-    n = generatePrime(1001, 2147470)
+    g = 10 # generatePrime(2, 20)
+    n = 2147483646 # generatePrime(1001, 2147470)
 
     print("\nWe will now demonstrate how the Diffie-Hellman key exchange works")
     time.sleep(2)
@@ -39,7 +41,8 @@ def main():
     time.sleep(2)
 
     # GETTING PUBLIC KEYS
-
+    
+    timeBeforeInput = time.time() - startTime
     wait = True
 
     alicePrivate = raw_input("Please select the private key for Alice (between 1 and n): ") # must be between 1 and n
@@ -73,6 +76,8 @@ def main():
             bobPrivate = raw_input("Bob's private key must be less than the public value n, please try again: ")
         else:
             bobPrivate = raw_input("That is not a valid value (integer), please try again: ")
+
+    timeAfterInput = time.time()
 
     print("\nAlice's private key is {} and Bob's private key is {}.").format(alicePrivate, bobPrivate)
     time.sleep(2)
@@ -109,6 +114,11 @@ def main():
     print("Their private keys were never transmitted over any medium, and they both have the same key.")
     time.sleep(2)
     print("This is the power of Diffie-Hellman")
+    time.sleep(2)
+
+    totalTime = (time.time() - timeAfterInput) + timeBeforeInput
+
+    print("\nRuntime: {} seconds").format(totalTime - 33)
 
 
 main()
